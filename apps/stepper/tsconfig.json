@@ -1,0 +1,27 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "paths": {
+            "@services/*": [
+                "./src/services/*"
+            ],
+            "@process/*": [
+                "./src/process/*"
+            ]
+        },
+        "outDir": "dist",
+        "rootDir": "src",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "esModuleInterop": true
+    },
+    "include": [
+        "src/**/*.ts"
+    ],
+    "ts-node": {
+        "experimentalSpecifierResolution": "node",
+        "transpileOnly": true,
+        "esm": true
+    }
+}

@@ -1,0 +1,36 @@
+services:
+  stp-nats:
+    image: nats:latest
+    container_name: stp-nats
+    command: >
+      -js 
+      -m 8222
+    ports:
+      - "4222:4222"  # NATS client port
+      - "8222:8222"  # Monitoring and management interface
+      - "6222:6222"  # Cluster communication port
+    volumes:
+      - ./dev/.datastore/stp-nats/data:/data  # Persist JetStream data
+    environment:
+      - NATS_SERVER_NAME=stepper-cluster
+      - NATS_CLUSTER_ID=stepper-cluster
+  
+  stp-db:
+    image: couchdb:latest
+    container_name: stp-db
+    ports:
+      - "5984:5984" # Expose CouchDB on port 5984
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=admin123
+    volumes:
+      - ./dev/.datastore/stp-db:/opt/couchdb/data
+
+  stp_dependencies:
+    image: ducktors/docker-wait-for-dependencies
+    depends_on:
+      - stp-nats
+      - stp-db
+      # - stp-db-couch-ui
+    container_name: wait-for-dependencies-stp
+    command: stp-nats:4222 stp-db:5984
